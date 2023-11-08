@@ -135,21 +135,17 @@ impl Runner for AddTwoNumbers {
   }
 }
 
-// A function that takes a string in the format "l1 = [2,4,3], l2 = [5,6,4]"
-// and returns two vectors of i32
-fn parse_string(s: &str) -> (Vec<i32>, Vec<i32>) {
-  // Use regex to match the pattern "l1 = [a,b,c], l2 = [d,e,f]"
-  // where a, b, c, d, e, f are integers
-  let re = Regex::new(r"l1 = \[(\d+),(\d+),(\d+)\], l2 = \[(\d+),(\d+),(\d+)\]").unwrap();
-  // Extract the capture groups from the string
-  let caps = re.captures(s).expect("Invalid format");
-  // Convert the capture groups to i32 and push them to vectors
-  let mut v1 = Vec::new();
-  let mut v2 = Vec::new();
-  for i in 1..=3 {
-      v1.push(caps[i].parse::<i32>().unwrap());
-      v2.push(caps[i+3].parse::<i32>().unwrap());
-  }
-  // Return the vectors
-  (v1, v2)
+// A function that takes a string as input and returns two vectors of i32
+fn parse_string(input: &str) -> (Vec<i32>, Vec<i32>) {
+  // Use regex to match the pattern "l1 = [x,y,z], l2 = [a,b,c]"
+  let re = Regex::new(r"l1 = \[(?P<l1>.*)\], l2 = \[(?P<l2>.*)\]").unwrap();
+  // Extract the two substrings inside the brackets
+  let caps = re.captures(input).unwrap();
+  let l1_str = caps.name("l1").unwrap().as_str();
+  let l2_str = caps.name("l2").unwrap().as_str();
+  // Split the substrings by comma and parse them as i32
+  let l1: Vec<i32> = l1_str.split(',').map(|s| s.parse().unwrap()).collect();
+  let l2: Vec<i32> = l2_str.split(',').map(|s| s.parse().unwrap()).collect();
+  // Return the two vectors
+  (l1, l2)
 }
